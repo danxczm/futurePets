@@ -4,13 +4,14 @@ const refs = {
   listEl: document.querySelector(".todo-list"),
   formEl: document.querySelector("form"),
   sortEl: document.querySelector(".filter-todo"),
-  // sortEl: (document.querySelector(".filter-todo").onchange = sortToDoItem),
 };
 
 refs.formEl.addEventListener("submit", addToDoItem);
 refs.listEl.addEventListener("click", removeToDoItem);
 refs.listEl.addEventListener("click", checkToDoItem);
 refs.sortEl.addEventListener("change", sortToDoItem);
+
+let ALL_TODOS;
 
 function addToDoItem(e) {
   e.preventDefault();
@@ -39,13 +40,12 @@ function removeToDoItem(e) {
 function checkToDoItem(e) {
   if (e.target.classList[0] === "complete-btn") {
     e.target.closest("div").classList.toggle("completed");
+    console.log(e.target.closest("div").textContent);
   }
 }
 
 function sortToDoItem(e) {
   const todos = refs.listEl.childNodes;
-  // var selectedValue = refs.sortEl.options[refs.sortEl.selectedIndex].value;
-  // console.log(selectedValue);
 
   todos.forEach((el) => {
     switch (e.target.value) {
@@ -69,3 +69,11 @@ function sortToDoItem(e) {
     }
   });
 }
+
+/* next step is to add LocalStorage functionality, make sure that "completed" tasks are saved after refreshing the page as "completed" (make two arr which will separatly save ALL and COMPLETED)*/
+
+/* change style of TDL, find some nice desighn, make it functionaly and uiux friendly*/
+
+// ! use quote API to motivate user
+// ? maybe add local weather API
+// ? add a
