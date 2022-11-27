@@ -16,7 +16,7 @@ svg {
 .kick-pad,
 .snare-pad,
 .hihat-pad {
-  width: 5rem;
+  width: 2rem;
   height: 5rem;
   margin: 1rem 0.5rem;
   cursor: pointer;
@@ -105,6 +105,32 @@ svg {
 select {
   padding: 1rem;
   font-size: 1rem;
+}
+
+.mute.active {
+  background: rgb(175, 171, 171);
+}
+
+.tempo {
+  margin: 3rem;
+  width: 30%;
+}
+
+.tempo-slider {
+  padding: 0.2rem;
+  appearance: none;
+  margin: 1rem 0rem;
+  width: 100%;
+  position: relative;
+  background: rgb(88 88 88);
+  cursor: pointer;
+  border-radius: 1rem;
+}
+
+.tempo p {
+  font-size: 1.5rem;
+  margin: 2rem;
+  text-align: center;
 }
 
 @keyframes playTrack {

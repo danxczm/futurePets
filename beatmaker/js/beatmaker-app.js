@@ -9,16 +9,18 @@ class DrumKit {
     this.snareAudio = document.querySelector(".snare-sound");
     this.hihatAudio = document.querySelector(".hihat-sound");
     this.index = 0;
-    this.bpm = 300;
+    this.bpm = 150;
     this.isPlaying = null;
     this.selects = document.querySelectorAll("select");
+    this.muteBtns = document.querySelectorAll(".mute");
+    this.tempoSlider = document.querySelector(".tempo-slider");
   }
 
   repeat() {
-    let step = this.index % 8;
+    let step = this.index % 16;
     const activeBars = document.querySelectorAll(`.b${step}`);
     activeBars.forEach((bar) => {
-      bar.style.animation = `playTrack 0.3s alternate ease-in-out 2`;
+      bar.style.animation = `playTrack 0.1s alternate ease-in-out 2`;
       if (bar.classList.contains("active")) {
         if (bar.classList.contains("kick-pad")) {
           this.kickAudio.currentTime = 0;
@@ -67,7 +69,6 @@ class DrumKit {
   changeSound(e) {
     const selectioName = e.target.name;
     const selectionValue = e.target.value;
-    console.log(selectioName);
     switch (selectioName) {
       case "kick-select":
         this.kickAudio.src = selectionValue;
@@ -78,6 +79,49 @@ class DrumKit {
       case "hihat-select":
         this.hihatAudio.src = selectionValue;
         break;
+    }
+  }
+
+  mute(e) {
+    const muteIndex = e.target.dataset.track;
+    e.target.classList.toggle("active");
+
+    if (e.target.classList.contains("active")) {
+      switch (muteIndex) {
+        case "0":
+          this.kickAudio.volume = 0;
+          break;
+        case "1":
+          this.snareAudio.volume = 0;
+          break;
+        case "2":
+          this.hihatAudio.volume = 0;
+          break;
+      }
+    } else {
+      switch (muteIndex) {
+        case "0":
+          this.kickAudio.volume = 1;
+          break;
+        case "1":
+          this.snareAudio.volume = 1;
+          break;
+        case "2":
+          this.hihatAudio.volume = 1;
+          break;
+      }
+    }
+  }
+  changeTempo(e) {
+    this.bpm = e.target.value;
+  }
+
+  updateTempo() {
+    clearInterval(this.isPlaying);
+    this.isPlaying = null;
+    const playBtn = document.querySelector(".play");
+    if (playBtn.classList.contains("active")) {
+      this.start();
     }
   }
 }
@@ -101,3 +145,26 @@ drumKit.selects.forEach((select) => {
     drumKit.changeSound(e);
   });
 });
+
+drumKit.muteBtns.forEach((btn) => {
+  btn.addEventListener("click", function (e) {
+    drumKit.mute(e);
+  });
+});
+
+drumKit.tempoSlider.addEventListener("input", function (e) {
+  drumKit.changeTempo(e);
+});
+
+drumKit.tempoSlider.addEventListener("change", function (e) {
+  drumKit.updateTempo(e);
+});
+
+// ! Ideas to add more
+/* 
+1. Make pads swing
+2. Change style (new design)
+3. 808 or 909 machine simulator (give more sounds)
+4. bass sounds to feel the "track"
+5. Find out how to give effects to sounds or to master channel (reverb, delay, distortion, volume)
+*/
