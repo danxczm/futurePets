@@ -1,14 +1,18 @@
-const refs = {
-  generateBtn: document.querySelector(".generate"),
-  colorDivs: document.querySelectorAll(".color"),
-  sliders: document.querySelectorAll('.input[type="range"]'),
-  currentHexes: document.querySelectorAll(".color h2"),
-};
+const generateBtn = document.querySelector(".generate");
+const colorDivs = document.querySelectorAll(".color");
+const sliders = document.querySelectorAll('input[type="range"]');
+const currentHexes = document.querySelectorAll(".color h2");
 let initialColors;
+
+//events list
+sliders.forEach((slider) => {
+  slider.addEventListener("input", hslControls);
+});
+
 const generateHex = (_) => chroma.random();
 
-function randomColors() {
-  refs.colorDivs.forEach((div, index) => {
+(function randomColors() {
+  colorDivs.forEach((div, index) => {
     const hexText = div.children[0];
     //add the color
     div.style.backgroundColor = generateHex();
@@ -16,7 +20,7 @@ function randomColors() {
     //change the text color
     checkTextColor(generateHex(), hexText);
     //colorize sliders
-    const color = chroma(generateHex());
+    const color = generateHex();
     const sliders = div.querySelectorAll(".sliders input");
     const hue = sliders[0];
     const brightness = sliders[1];
@@ -24,7 +28,7 @@ function randomColors() {
 
     colorizeSliders(color, hue, brightness, saturation);
   });
-}
+})();
 
 function checkTextColor(color, text) {
   const brightness = chroma(color).luminance();
@@ -54,7 +58,24 @@ function colorizeSliders(color, hue, brightness, saturation) {
   hue.style.backgroundImage = `linear-gradient(to right, rgb(204,75,75),rgb(204,204,75),rgb(75,204,75),rgb(75,204,204),rgb(75,75,204),rgb(204,75,204),rgb(204,75,75))`;
 }
 
-randomColors();
+function hslControls(e) {
+  const index =
+    e.target.getAttribute("data-bright") ||
+    e.target.getAttribute("data-sat") ||
+    e.target.getAttribute("data-hue");
+
+  let sliders = e.target.parentElement.querySelectorAll('input[type="range"]');
+  const hue = sliders[0];
+  const brightness = sliders[1];
+  const saturation = sliders[2];
+  const bgColor = colorDivs[index].querySelector("h2").innerText;
+  let color = chroma(bgColor)
+    .set("hsl.s", saturation.value)
+    .set("hsl.l", brightness.value)
+    .set("hsl.h", hue.value);
+  colorDivs[index].style.backgroundColor = color;
+}
+
 /* generate random color:
 	const letters = "0123456789ABCDEF";
   let hash = "#";
