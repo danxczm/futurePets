@@ -18,15 +18,18 @@ colorDivs.forEach((div, index) => {
 const generateHex = (_) => chroma.random();
 
 (function randomColors() {
+  initialColors = [];
   colorDivs.forEach((div, index) => {
     const hexText = div.children[0];
+    const randomColor = generateHex();
+    initialColors.push(chroma(randomColor).hex());
     //add the color
-    div.style.backgroundColor = generateHex();
-    hexText.innerText = generateHex();
+    div.style.backgroundColor = randomColor;
+    hexText.innerText = randomColor;
     //change the text color
-    checkTextColor(generateHex(), hexText);
+    checkTextColor(randomColor, hexText);
     //colorize sliders
-    const color = generateHex();
+    const color = randomColor;
     const sliders = div.querySelectorAll(".sliders input");
     const hue = sliders[0];
     const brightness = sliders[1];
@@ -34,6 +37,8 @@ const generateHex = (_) => chroma.random();
 
     colorizeSliders(color, hue, brightness, saturation);
   });
+  //reset inputs
+  resetInputs();
 })();
 
 function checkTextColor(color, text) {
@@ -74,7 +79,7 @@ function hslControls(e) {
   const hue = sliders[0];
   const brightness = sliders[1];
   const saturation = sliders[2];
-  const bgColor = colorDivs[index].querySelector("h2").innerText;
+  const bgColor = initialColors[index];
   let color = chroma(bgColor)
     .set("hsl.s", saturation.value)
     .set("hsl.l", brightness.value)
@@ -94,6 +99,27 @@ function updateTextUI(index) {
   for (let icon of icons) {
     checkTextColor(color, icon);
   }
+}
+
+function resetInputs() {
+  const sliders = document.querySelectorAll(".sliders input");
+  sliders.forEach((slider) => {
+    if (slider.name === "hue") {
+      const hueColor = initialColors[slider.getAttribute("data-hue")];
+      const hueValue = chroma(hueColor).hsl()[0];
+      slider.value = Math.floor(hueValue);
+    }
+    if (slider.name === "brightness") {
+      const brightColor = initialColors[slider.getAttribute("data-bright")];
+      const brightValue = chroma(brightColor).hsl()[2];
+      slider.value = brightValue.toFixed(2);
+    }
+    if (slider.name === "saturation") {
+      const satColor = initialColors[slider.getAttribute("data-sat")];
+      const satValue = chroma(satColor).hsl()[1];
+      slider.value = satValue.toFixed(2);
+    }
+  });
 }
 
 /* generate random color:
