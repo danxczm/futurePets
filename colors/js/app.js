@@ -2,6 +2,7 @@ const generateBtn = document.querySelector(".generate");
 const colorDivs = document.querySelectorAll(".color");
 const sliders = document.querySelectorAll('input[type="range"]');
 const currentHexes = document.querySelectorAll(".color h2");
+const popup = document.querySelector(".copy-container");
 let initialColors;
 
 //events list
@@ -15,6 +16,18 @@ colorDivs.forEach((div, index) => {
   });
 });
 
+currentHexes.forEach((hex) => {
+  hex.addEventListener("click", () => {
+    copyToClipboard(hex);
+  });
+});
+
+popup.addEventListener("transitionend", () => {
+  const popupBox = popup.children[0];
+  popup.classList.remove("active");
+  popupBox.classList.remove("active");
+});
+
 const generateHex = (_) => chroma.random();
 
 (function randomColors() {
@@ -25,7 +38,7 @@ const generateHex = (_) => chroma.random();
     initialColors.push(chroma(randomColor).hex());
     //add the color
     div.style.backgroundColor = randomColor;
-    hexText.innerText = randomColor;
+    hexText.innerText = randomColor.toString().toUpperCase();
     //change the text color
     checkTextColor(randomColor, hexText);
     //colorize sliders
@@ -85,6 +98,8 @@ function hslControls(e) {
     .set("hsl.l", brightness.value)
     .set("hsl.h", hue.value);
   colorDivs[index].style.backgroundColor = color;
+  // change colors of inputs when change value
+  colorizeSliders(color, hue, brightness, saturation);
 }
 
 function updateTextUI(index) {
@@ -122,6 +137,18 @@ function resetInputs() {
   });
 }
 
+function copyToClipboard(hex) {
+  const el = document.createElement("textarea");
+  el.value = hex.innerText;
+  document.body.appendChild(el);
+  el.select();
+  document.execCommand("copy");
+  // The alternative to document. execCommand() is Clipboard API, via navigator.
+  document.body.removeChild(el);
+  const popupBox = popup.children[0];
+  popupBox.classList.add("active");
+  popup.classList.add("active");
+}
 /* generate random color:
 	const letters = "0123456789ABCDEF";
   let hash = "#";
